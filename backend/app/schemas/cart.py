@@ -14,6 +14,7 @@ class CartItemCreate(CartItemBase):
 
 
 class CartItemUpdate(BaseModel):
+    product_id: int = Field(description='Product ID')
     quantity: int = Field(gt=0, description='New quantity (must be > 0)')
 
 
