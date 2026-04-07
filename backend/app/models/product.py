@@ -1,21 +1,27 @@
-from datetime import datetime, timezone
+from datetime import datetime
+from decimal import Decimal
+from typing import Optional, TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import String, Text, ForeignKey, func, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from ..database import Base
+
+if TYPE_CHECKING:
+    from .category import Category
 
 
 class Product(Base):
     __tablename__ = 'products'
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, index=True)
-    description = Column(Text)
-    price = Column(Float, nullable=False)
-    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
-    image_url = Column(String)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(100), index=True)
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    category_id: Mapped[int] = mapped_column(ForeignKey('categories.id', ondelete='CASCADE'))
+    image_url: Mapped[Optional[str]] = mapped_column(String(500))
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
-    def __repr__(self):
-        return f'<Product(id={self.id}, name={self.name}, price={self.price}>'
-    
+    category: Mapped['Category'] = relationship('Category', back_populates='products')
+
+    def __repr__(self) -> str:
+        return f'<Product(id={self.id}, name={self.name!r}, price={self.price})>'
