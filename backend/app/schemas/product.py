@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, ConfigDict
 
-from backend.app.schemas.category import CategoryResponse
+from .category import CategoryResponse
 
 
 class ProductBase(BaseModel):
