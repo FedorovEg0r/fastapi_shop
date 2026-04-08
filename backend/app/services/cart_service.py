@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy.orm import Session
 from typing import Dict
 from ..repositories.product_repository import ProductRepository
@@ -50,7 +52,7 @@ class CartService:
         products_dict = {product.id: product for product in products}
 
         cart_items = []
-        total_price = 0.0
+        total_price = Decimal(0.0)
         total_items = 0
 
         for product_id, quantity in cart_data.items():
@@ -65,4 +67,4 @@ class CartService:
                 total_price += subtotal
                 total_items += quantity
 
-        return CartResponse(items=cart_items, total=round(total_price), items_count=total_items)
+        return CartResponse(items=cart_items, total=total_price, items_count=total_items)
